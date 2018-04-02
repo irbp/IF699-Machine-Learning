@@ -47,3 +47,25 @@ def vdm_distance(x1, x2, N, NC):
     vdm = np.asarray(vdm)
     
     return np.sqrt(vdm.sum())
+
+def hvdm_distance(x1, x2, N, NC, max_a, min_a):
+    distances = []
+    q = 1
+    
+    for i in range(len(x1)):
+        if (isinstance(x1[i], str)):
+            N1 = N[i][x1[i]]
+            N2 = N[i][x2[i]]
+            res = 0
+            for k in NC.keys():
+                if (x1[i] in NC[k][i]):
+                    NC1 = NC[k][i][x1[i]]
+                if (x2[i] in NC[k][i]):
+                    NC2 = NC[k][i][x2[i]]
+                res += (abs((NC1 / N1) - (NC2 / N2)) ** q)
+            distances.append(res)
+        else:
+            distances.append(abs(x1[i] - x2[i]) / (max_a[i] - min_a[i]))
+
+    distances = np.asarray(distances)
+    return np.sqrt((distances**2).sum())

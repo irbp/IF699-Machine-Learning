@@ -2,18 +2,20 @@ import pandas as pd
 import numpy as np
 from .distances import *
 
-def neighborhood(x_train, y_train, xq, categorical=False, dataframe=[]):
+def neighborhood(x_train, y_train, xq, data_type=0, N=None, NC=None, max_a=[], min_a=[]):
     distances = []
     
-    if (categorical == True):
-        N = calculate_N(dataframe)
-        NC = calculate_NC(dataframe)
+    if (data_type == 0):
+        for i, x in enumerate(x_train):
+            d = euclidean_distance(x, xq)
+            distances.append([d, y_train[i]])
+    elif (data_type == 1):
         for i, x in enumerate(x_train):
             d = vdm_distance(x, xq, N, NC)
             distances.append([d, y_train[i]])
     else:
         for i, x in enumerate(x_train):
-            d = euclidean_distance(x, xq)
+            d = hvdm_distance(x, xq, N, NC, max_a, min_a)
             distances.append([d, y_train[i]])
         
     sorted_distances = sorted(distances, key=lambda z:z[0])
@@ -21,9 +23,9 @@ def neighborhood(x_train, y_train, xq, categorical=False, dataframe=[]):
     
     return neighbors
 
-def knn(x_train, y_train, xq, k_values, categorical=False, dataframe=[]):
+def knn(x_train, y_train, xq, k_values, data_type=0, N=None, NC=None, max_a=[], min_a=[]):
     pred = []
-    neighbors = neighborhood(x_train, y_train, xq, categorical, dataframe)
+    neighbors = neighborhood(x_train, y_train, xq, data_type, N, NC, max_a, min_a)
 
     for k in k_values:
         freq = np.unique(neighbors[:k,-1], return_counts=True)
@@ -31,9 +33,9 @@ def knn(x_train, y_train, xq, k_values, categorical=False, dataframe=[]):
         
     return pred
 
-def weighted_knn(x_train, y_train, xq, k_values, categorical=False, dataframe=[]):
+def weighted_knn(x_train, y_train, xq, k_values, data_type=0, N=None, NC=None, max_a=[], min_a=[]):
     pred = []
-    distances = neighborhood(x_train, y_train, xq, categorical, dataframe)
+    distances = neighborhood(x_train, y_train, xq, data_type, N, NC, max_a, min_a)
 
     for k in k_values:
         classes = {}
@@ -53,13 +55,25 @@ def weighted_knn(x_train, y_train, xq, k_values, categorical=False, dataframe=[]
             
     return pred
 
-def cross_validation(data, n_fold, k_values, with_weight=False, categorical=False, dataframe=[]):
+def cross_validation(data, n_fold, k_values, with_weight=False, data_type=0, dataframe=[]):
     size = data.shape[0]
     k_size = int(size / n_fold)
     x = [data[i:i+k_size,:-1] for i in range(0, size, k_size)]
     y = [data[i:i+k_size,-1] for i in range(0, size, k_size)]
     accs = []
-    
+    N = []
+    NC = {}
+    max_a = []
+    min_a = []
+
+    data = np.asarray(data)
+
+    if (data_type != 0):
+        N = calculate_N(dataframe)
+        NC = calculate_NC(dataframe)
+        max_a = [max(data[:,i]) for i in range(data.shape[1])]
+        min_a = [min(data[:,i]) for i in range(data.shape[1])]
+
     for i in range(n_fold):
         preds = []
         x_train = np.asarray(x[:i] + x[i+1:])
@@ -70,10 +84,10 @@ def cross_validation(data, n_fold, k_values, with_weight=False, categorical=Fals
         y_test = np.asarray(y[i])
         if (with_weight == True):
             for i, xq in enumerate(x_test):
-                preds.append(weighted_knn(x_train, y_train, xq, k_values, categorical, dataframe))
+                preds.append(weighted_knn(x_train, y_train, xq, k_values, data_type, N, NC, max_a, min_a))
         else:
             for i, xq in enumerate(x_test):
-                preds.append(knn(x_train, y_train, xq, k_values, categorical, dataframe))
+                preds.append(knn(x_train, y_train, xq, k_values, data_type, N, NC, max_a, min_a))
                 
         preds = np.asarray(preds)
         acc = []
