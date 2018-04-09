@@ -1,10 +1,13 @@
 from random import randrange
 from math import sqrt
+from math import isnan
 
 def euclidean_distance(x, xq):
-    sum = 0
+    sum = 0.0
     
     for i in range(len(x)-1):
+        if isnan(x[i]) or isnan(xq[i]):
+            print(x[i], xq[i])
         sum += float((x[i]-xq[i])**2)
 
     return sqrt(sum)
