@@ -38,40 +38,63 @@ def verify_window(m):
 
     return min(di/dj, dj/di) > s
 
-def lvq_1(train, n_prototypes, learn_rate, epochs):
+def lvq_1(train, n_prototypes, learn_rate):
     prototypes = [random_prototype(train) for i in range(n_prototypes)]
+    alpha = learn_rate
 
-    for epoch in range(epochs):
-        alpha = learn_rate * (1.0-(epoch/float(epochs)))
-        for xq in train:
-            idx = get_nearest_prototype(prototypes, xq)[0][0]
-            for i in range(len(xq)-1):
-                error = xq[i] - prototypes[idx][i]
-                if prototypes[idx][-1] == xq[-1]:
-                    prototypes[idx][i] += (alpha * error)
-                else:
-                    prototypes[idx][i] -= (alpha * error)
+    for xq in train:
+        idx = get_nearest_prototype(prototypes, xq)[0][0]
+        for i in range(len(xq)-1):
+            error = xq[i] - prototypes[idx][i]
+            if prototypes[idx][-1] == xq[-1]:
+                prototypes[idx][i] += (alpha * error)
+            else:
+                prototypes[idx][i] -= (alpha * error)
 
     return prototypes
 
-def lvq_21(train, n_prototypes, learn_rate, epochs):
+def lvq_21(train, n_prototypes, learn_rate):
+    prototypes = [random_prototype(train) for i in range(n_prototypes)]
+    alpha = learn_rate
+
+    for xq in train:
+        m = get_nearest_prototype(prototypes, xq, n=2)
+        mi = m[0][0]
+        mj = m[1][0]
+        for i in range(len(xq)-1):
+            error_i = xq[i] - prototypes[mi][i]
+            error_j = xq[i] - prototypes[mj][i]
+            if (verify_window(m)):
+                if prototypes[mi][-1] == xq[-1] and prototypes[mj][-1] != xq[-1]:
+                    prototypes[mi][i] += (alpha * error_i)
+                    prototypes[mj][i] -= (alpha * error_j)
+                elif prototypes[mi][-1] != xq[-1] and prototypes[mj][-1] == xq[-1]:
+                    prototypes[mi][i] -= (alpha * error_i)
+                    prototypes[mj][i] += (alpha * error_j)
+
+    return prototypes
+
+def lvq_3(train, n_prototypes, learn_rate):
+    eta = 0.1
+    alpha = learn_rate
     prototypes = [random_prototype(train) for i in range(n_prototypes)]
 
-    for epoch in range(epochs):
-        alpha = learn_rate * (1.0-(epoch/float(epochs)))
-        for xq in train:
-            m = get_nearest_prototype(prototypes, xq, n=2)
-            mi = m[0][0]
-            mj = m[1][0]
-            for i in range(len(xq)-1):
-                error_i = xq[i] - prototypes[mi][i]
-                error_j = xq[i] - prototypes[mj][i]
-                if (verify_window(m)):
-                    if prototypes[mi][-1] == xq[-1] and prototypes[mj][-1] != xq[-1]:
-                        prototypes[mi][i] += (alpha * error_i)
-                        prototypes[mj][i] -= (alpha * error_j)
-                    elif prototypes[mi][-1] != xq[-1] and prototypes[mj][-1] == xq[-1]:
-                        prototypes[mi][i] -= (alpha * error_i)
-                        prototypes[mj][i] += (alpha * error_j)
-
+    for xq in train:
+        m = get_nearest_prototype(prototypes, xq, n=2)
+        mi = m[0][0]
+        mj = m[1][0]
+        for i in range(len(xq)-1):
+            error_i = xq[i] - prototypes[mi][i]
+            error_j = xq[i] - prototypes[mj][i]
+            if (verify_window(m)):
+                if prototypes[mi][-1] == xq[-1] and prototypes[mj][-1] != xq[-1]:
+                    prototypes[mi][i] += (alpha * error_i)
+                    prototypes[mj][i] -= (alpha * error_j)
+                elif prototypes[mi][-1] != xq[-1] and prototypes[mj][-1] == xq[-1]:
+                    prototypes[mi][i] -= (alpha * error_i)
+                    prototypes[mj][i] += (alpha * error_j)
+                elif prototypes[mi][-1] == xq[-1] and prototypes[mj][-1] == xq[-1]:
+                    prototypes[mi][i] += (eta * alpha * error_i)
+                    prototypes[mj][i] += (eta * alpha * error_j)
+    
     return prototypes
