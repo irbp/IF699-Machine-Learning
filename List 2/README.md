@@ -11,7 +11,7 @@
 
 ### Metodologia
 
-<div style="text-align: justify"> Para a avaliação dos algoritmos propostos pela questão, foram utilizados duas bases de dados obtidas no Promise Repository (http://promise.site.uottawa.ca/SERepository/datasets-page.html). O primeiro deles foi o "JM1/Software defect prediction" e o segundo foi o "KC1/Software defect prediction". As duas bases de dados estavam contidas cada uma em um arquivo ARFF (Atribute-Relation File Format), onde cada linha representa uma instância e as colunas representam os atributos juntamente com as classes. Para a leitura deste formato de arquivo foi utilizado o método arff da biblioteca Scipy para Python assim como a biblioteca Pandas que é voltada para a análise de dados. A biblioteca Matplotlib também foi utilizada para gerar os gráficos utilizados na análise. Na base de dados "JM1/Software defect prediction" foi detectado que para algumas instâncias havia atributos ausentes, desta forma um tratamento prévio dos dados foi feito.
+<div style="text-align: justify"> Para a avaliação dos algoritmos propostos pela questão, foram utilizados duas bases de dados obtidas no Promise Repository (http://promise.site.uottawa.ca/SERepository/datasets-page.html). O primeiro deles foi o "JM1/Software defect prediction" e o segundo foi o "KC1/Software defect prediction". As duas bases de dados estavam contidas cada uma em um arquivo ARFF (Atribute-Relation File Format), onde cada linha representa uma instância e as colunas representam os atributos juntamente com as classes. Para a leitura deste formato de arquivo foi utilizado o método arff da biblioteca Scipy para Python assim como a biblioteca Pandas que é voltada para a análise de dados. A biblioteca Matplotlib também foi utilizada para gerar os gráficos utilizados na análise. Na base de dados "JM1/Software defect prediction" foi detectado que para algumas instâncias havia atributos ausentes, desta forma um tratamento prévio dos dados foi feito. </div>
 
 
 ```python
@@ -24,7 +24,7 @@ from math import isnan
 import matplotlib.pyplot as plt
 ```
 
-<div style="text-align: justify"> Abaixo segue um resumo da base de dados "JM1/Software defect prediction"
+<div style="text-align: justify"> Abaixo segue um resumo da base de dados "JM1/Software defect prediction" </div>
 
 
 ```python
@@ -455,7 +455,7 @@ df_1.describe()
 
 
 
-<div style="text-align: justify"> Um desbalanceamento entre as classes é notado no gráfico abaixo:
+<div style="text-align: justify"> Um desbalanceamento entre as classes é notado no gráfico abaixo: </div>
 
 
 ```python
@@ -466,7 +466,7 @@ plot_1 = df_1['defects'].value_counts().plot(kind='bar', title='Distribuição d
 ![png](imgs/output_6_0.png)
 
 
-<div style="text-align: justify"> Agora analisando a base de dados "KC1/Software defect prediction", temos:
+<div style="text-align: justify"> Agora analisando a base de dados "KC1/Software defect prediction", temos: </div>
 
 
 ```python
@@ -897,7 +897,7 @@ df_2.describe()
 
 
 
-<div style="text-align: justify"> Assim como a primeira base de dados, podemos observar aqui também uma desproporção entre as classes do problema:
+<div style="text-align: justify"> Assim como a primeira base de dados, podemos observar aqui também uma desproporção entre as classes do problema: </div>
 
 
 ```python
@@ -908,11 +908,11 @@ plot_2 = df_2['defects'].value_counts().plot(kind='bar', title='Distribuição d
 ![png](imgs/output_11_0.png)
 
 
-<div style="text-align: justify"> Os algoritmos LVQ1, LVQ2.1 e LVQ3 foram implementados em Python e se econtram no diretório `src/` no arquivo `lvq.py`. Para o k-NN foi utilizado a solução fornecida pela biblitoteca scikit-learn (http://scikit-learn.org/stable/). No LVQ1 foi definido ${\alpha = 0.3}$, no LVQ2.1 ${w = 0.2}$ e no LVQ3 foram definidos ${w = 0.2}$ e ${\epsilon = 0.1}$. $70\%$ do dataset foi separado para o treinamento dos protótipos e logo após o treino $30\%$ restante do dataset foi utilizado como conjunto de teste do k-NN enquanto os protótipos foram utilizados como conjunto de treino. A normalização dos dados também foi aplicada nos datasets utilizados, já que eles apresentavam atributos com valores que variavam mais do que outros, sem a normalização esses atributos teriam "pesos" maiores do que os outros durante o treinamento.
+<div style="text-align: justify"> Os algoritmos LVQ1, LVQ2.1 e LVQ3 foram implementados em Python e se econtram no diretório `src/` no arquivo `lvq.py`. Para o k-NN foi utilizado a solução fornecida pela biblitoteca scikit-learn (http://scikit-learn.org/stable/). No LVQ1 foi definido ${\alpha = 0.3}$, no LVQ2.1 ${w = 0.2}$ e no LVQ3 foram definidos ${w = 0.2}$ e ${\epsilon = 0.1}$. $70\%$ do dataset foi separado para o treinamento dos protótipos e logo após o treino $30\%$ restante do dataset foi utilizado como conjunto de teste do k-NN enquanto os protótipos foram utilizados como conjunto de treino. A normalização dos dados também foi aplicada nos datasets utilizados, já que eles apresentavam atributos com valores que variavam mais do que outros, sem a normalização esses atributos teriam "pesos" maiores do que os outros durante o treinamento. </div>
 
 ### Resultados
 
-<div style="text-align: justify"> Para a avaliação dos algorimos LVQ1, LVQ2.1 e LVQ3 cada base de dados foi submetida ao treino e depois os protótipos gerados foram submetidos ao k-NN para os números de vizinhos ${k = \{1, 3\}}$. O número de protótipos gerados também foi variado entre os testes. As acurácias obtidas com as bases de dados seguem abaixo:
+<div style="text-align: justify"> Para a avaliação dos algorimos LVQ1, LVQ2.1 e LVQ3 cada base de dados foi submetida ao treino e depois os protótipos gerados foram submetidos ao k-NN para os números de vizinhos ${k = \{1, 3\}}$. O número de protótipos gerados também foi variado entre os testes. As acurácias obtidas com as bases de dados seguem abaixo: </div>
 
 #### JM1/Software defect prediction
 
@@ -1368,11 +1368,11 @@ plt.show()
 ![png](imgs/output_23_1.png)
 
 
-<div style="text-align: justify"> Com os resultados mostrados acima, podemos observar que os resultados entre as três implementações dos LVQ's são bem parecidos e apresentam acurácia em volta dos $80\%$, isso provavelmente se deve ao desbalanceamento da base de dados. No segundo dataset podemos observar também que as acurácias são ligeiramente maiores do que as acurácias obtidas com o primeiro dataset, isso se deve ao fato de que os protótipos gerados pelo segundo dataset representam melhor a base de dados já que esta é menor do que a primeira e foram utilizados o mesmo número de protótipos nos dois.
+<div style="text-align: justify"> Com os resultados mostrados acima, podemos observar que os resultados entre as três implementações dos LVQ's são bem parecidos e apresentam acurácia em volta dos $80\%$, isso provavelmente se deve ao desbalanceamento da base de dados. No segundo dataset podemos observar também que as acurácias são ligeiramente maiores do que as acurácias obtidas com o primeiro dataset, isso se deve ao fato de que os protótipos gerados pelo segundo dataset representam melhor a base de dados já que esta é menor do que a primeira e foram utilizados o mesmo número de protótipos nos dois. </div>
 
 #### Comparação do k-NN com e sem protótipos
 
-<div style="text-align: justify"> Logo abaixo será feita uma comparação utilizando o k-NN com a utilização de protótipos gerados pelo LVQ3 para um número de protótipos igual a 200 e também sem a utilização de protótipos. A base de dados que será utilizada será a "KC1/Software defect prediction".
+<div style="text-align: justify"> Logo abaixo será feita uma comparação utilizando o k-NN com a utilização de protótipos gerados pelo LVQ3 para um número de protótipos igual a 200 e também sem a utilização de protótipos. A base de dados que será utilizada será a "KC1/Software defect prediction". </div>
 
 
 ```python
@@ -1436,4 +1436,4 @@ print("The accuracy for k = 3 without prototypes is: {:.2f}%".format(acc))
 
 ### Conclusão
 
-<div style="text-align: justify"> Com a implementação dos algoritmos sugeridos pela atividade, pode-se notar que a geração de protótipos algo é interessante a se fazer quando se quer reduzir a base de dados para um tamanho mais viável. Através das avaliações executadas foram obtidas acurácias com valores bastante próximos tanto para os testes com protótipos quanto para o teste sem protótipos, ainda assim a acurácia ainda permaneceu abaixo de $90\%$ provavelmente por conta do desbalanceamento das classes da base de dados.
+<div style="text-align: justify"> Com a implementação dos algoritmos sugeridos pela atividade, pode-se notar que a geração de protótipos algo é interessante a se fazer quando se quer reduzir a base de dados para um tamanho mais viável. Através das avaliações executadas foram obtidas acurácias com valores bastante próximos tanto para os testes com protótipos quanto para o teste sem protótipos, ainda assim a acurácia ainda permaneceu abaixo de $90\%$ provavelmente por conta do desbalanceamento das classes da base de dados. </div>
