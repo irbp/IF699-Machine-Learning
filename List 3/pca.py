@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 
 from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
 from scipy.io import arff
 
 class PCA:
@@ -35,7 +36,13 @@ class PCA:
 
         return new_X
 
-    # def avaliate_pca(self, compare_orig=False)
+    def avaliate_pca(self, X_train, y_train, X_test, y_test, compare_orig=False):
+        classifier = KNeighborsClassifier(n_neighbors=7)
+        classifier.fit(X_train, y_train)
+        score = classifier.score(X_test, y_test)
+        print("The accuracy is: {:.2f}%".format(score))
+
+        return score
 
         
 def main():
