@@ -9,15 +9,16 @@ from scipy.io import arff
 
 from sklearn.decomposition import PCA as PCASK
 
+N_COMPONENTS = [1, 7, 14]
+
 class PCA:
     def __init__(self, X):
         self.__X = X
         self.__X_std = 0
 
     def __covariance_matrix(self, X):
-        mean_vec = np.mean(X, axis=0)
-        cov_mat = (X - mean_vec).T.dot(X - mean_vec) / (X.shape[0] - 1)
-
+        cov_mat = np.cov(self.__X_std.T)
+        
         return cov_mat
 
     def __calculate_eigens(self):
@@ -48,7 +49,7 @@ def knn(X, y, k=7):
     return score
         
 def main():
-    data = arff.loadarff("datasets/jm1.arff")
+    data = arff.loadarff("datasets/kc2.arff")
     df = pd.DataFrame(data[0])
     df.dropna(how="all", inplace=True)
     X = df.iloc[:,:-1].values
@@ -67,19 +68,18 @@ def main():
     smote_enn = SMOTEENN(random_state=0)
     X, y = smote_enn.fit_sample(X, y)
 
-    # Selecting principal components with PCA
     pca = PCA(X)
-    new_X = pca.get_components(6)
-    print("Principal components:\n{}".format(new_X))
 
-    # Avaliating the new dataset
-    result = knn(new_X, y)
-    print("The accuracy is: {:.2f}%".format(result * 100))
+    for n in N_COMPONENTS:
+        # Selecting principal components with PCA
+        new_X = pca.get_components(n)
 
-    X = StandardScaler().fit_transform(X)
-    pca_sklearn = PCASK(n_components=6)
-    new_x = pca_sklearn.fit_transform(X)
-    print("Principal components sklearn:\n{}".format(new_x))
+        # Avaliating the new dataset
+        acc = knn(new_X, y)
+        print("The accuracy for {} component(s) is: {:.2f}%".format(n, acc * 100))
+
+    acc = knn(X, y)
+    print("The accuracy for the original dataset is: {:.2f}%".format(acc * 100))
 
 if __name__ == "__main__":
     main()
