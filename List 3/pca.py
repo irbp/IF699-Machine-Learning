@@ -9,7 +9,7 @@ from imblearn.combine import SMOTEENN
 from scipy.io import arff
 
 N_COMPONENTS = [1, 7, 14]
-DATASETS = ["jm1", "kc2"]
+DATASETS = ["jm1", "kc1"]
 
 class PCA:
     def __init__(self, X):
