@@ -7,9 +7,8 @@ from sklearn.neighbors import KNeighborsClassifier
 from imblearn.combine import SMOTEENN
 from scipy.io import arff
 
-from sklearn.decomposition import PCA as PCASK
-
 N_COMPONENTS = [1, 7, 14]
+DATASETS = ['jm1.arff', 'kc2.arff']
 
 class PCA:
     def __init__(self, X):
@@ -40,16 +39,8 @@ class PCA:
 
         return new_X
 
-def knn(X, y, k=7):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
-    classifier = KNeighborsClassifier(n_neighbors=7)
-    classifier.fit(X_train, y_train)
-    score = classifier.score(X_test, y_test)
-
-    return score
-        
-def main():
-    data = arff.loadarff("datasets/kc2.arff")
+def load_dataset(file):
+    data = arff.loadarff("datasets/" + file)
     df = pd.DataFrame(data[0])
     df.dropna(how="all", inplace=True)
     X = df.iloc[:,:-1].values
@@ -68,18 +59,33 @@ def main():
     smote_enn = SMOTEENN(random_state=0)
     X, y = smote_enn.fit_sample(X, y)
 
-    pca = PCA(X)
+    return X, y
 
-    for n in N_COMPONENTS:
-        # Selecting principal components with PCA
-        new_X = pca.get_components(n)
+def knn(X, y, k=7):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+    classifier = KNeighborsClassifier(n_neighbors=7)
+    classifier.fit(X_train, y_train)
+    score = classifier.score(X_test, y_test)
 
-        # Avaliating the new dataset
-        acc = knn(new_X, y)
-        print("The accuracy for {} component(s) is: {:.2f}%".format(n, acc * 100))
+    return score
+        
+def main():
+    for dataset in DATASETS:
+        print("-------------Dataset: {}-------------".format(dataset))
+        X, y = load_dataset(dataset)
 
-    acc = knn(X, y)
-    print("The accuracy for the original dataset is: {:.2f}%".format(acc * 100))
+        pca = PCA(X)
+
+        for n in N_COMPONENTS:
+            # Selecting principal components with PCA
+            new_X = pca.get_components(n)
+
+            # Avaliating the new dataset
+            acc = knn(new_X, y)
+            print("The accuracy for {} component(s) is: {:.2f}%".format(n, acc * 100))
+
+        acc = knn(X, y)
+        print("The accuracy for the original dataset is: {:.2f}%\n\n".format(acc * 100))
 
 if __name__ == "__main__":
     main()
