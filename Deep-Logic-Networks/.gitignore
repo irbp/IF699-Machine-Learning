@@ -1,0 +1,14 @@
+*.pdf
+*.log
+*.synctex.gz
+*.toc
+*.fls
+*.aux
+*.fdb_latexmk
+*.pyc
+*.bbl
+*.blg
+
+.DS_Store
+.idea/
+\.vscode/
